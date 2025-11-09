@@ -1,65 +1,190 @@
-import Image from "next/image";
+'use client';
+
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { ProductCard } from '@/components/product-card';
+import { ArrowRight, Package, Shield, Truck } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { supabase, Product } from '@/lib/supabase';
 
 export default function Home() {
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchFeaturedProducts() {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .limit(3)
+        .order('created_at', { ascending: false });
+
+      if (!error && data) {
+        setFeaturedProducts(data);
+      }
+      setLoading(false);
+    }
+
+    fetchFeaturedProducts();
+  }, []);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="flex flex-col">
+      <section className="relative overflow-hidden border-b bg-gradient-to-b from-background to-muted/20">
+        <div className="container mx-auto px-4 py-16 md:py-24">
+          <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5 }}
+              className="flex flex-col justify-center space-y-6"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              <div className="space-y-4">
+                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
+                  Welcome to{' '}
+                  <span className="bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                    BazmaStore
+                  </span>
+                </h1>
+                <p className="text-lg text-muted-foreground md:text-xl">
+                  Discover quality products at amazing prices. Your trusted online shopping destination with secure payments and fast delivery.
+                </p>
+              </div>
+              <div className="flex flex-col gap-4 sm:flex-row">
+                <Button asChild size="lg" className="text-base">
+                  <Link href="/products">
+                    Shop Now
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" size="lg" className="text-base">
+                  <Link href="/contact">Contact Us</Link>
+                </Button>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="flex items-center justify-center"
             >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              <div className="relative aspect-square w-full max-w-lg overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500/10 via-cyan-500/10 to-teal-500/10 p-8">
+                <iframe
+                  src="https://my.spline.design/untitled-43c4933b073247f292e5c532b0d4ad28/"
+                  className="h-full w-full"
+                  title="3D Store Model"
+                />
+              </div>
+            </motion.div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      <section className="border-b py-16">
+        <div className="container mx-auto px-4">
+          <div className="grid gap-8 md:grid-cols-3">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="flex flex-col items-center space-y-4 text-center"
+            >
+              <div className="rounded-full bg-primary/10 p-4">
+                <Truck className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold">Fast Delivery</h3>
+              <p className="text-muted-foreground">
+                Quick and reliable shipping to your doorstep
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="flex flex-col items-center space-y-4 text-center"
+            >
+              <div className="rounded-full bg-primary/10 p-4">
+                <Shield className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold">Secure Payment</h3>
+              <p className="text-muted-foreground">
+                Safe transactions powered by Midtrans
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="flex flex-col items-center space-y-4 text-center"
+            >
+              <div className="rounded-full bg-primary/10 p-4">
+                <Package className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold">Quality Products</h3>
+              <p className="text-muted-foreground">
+                Carefully curated selection of top items
+              </p>
+            </motion.div>
+          </div>
         </div>
-      </main>
+      </section>
+
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-12 text-center"
+          >
+            <h2 className="mb-4 text-3xl font-bold tracking-tight md:text-4xl">
+              Featured Products
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              Check out our latest and most popular items
+            </p>
+          </motion.div>
+
+          {loading ? (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-96 animate-pulse rounded-lg bg-muted" />
+              ))}
+            </div>
+          ) : featuredProducts.length > 0 ? (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {featuredProducts.map((product, index) => (
+                <ProductCard key={product.id} product={product} index={index} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center">
+              <p className="text-muted-foreground">No products available yet.</p>
+            </div>
+          )}
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="mt-12 text-center"
+          >
+            <Button asChild size="lg" variant="outline">
+              <Link href="/products">
+                View All Products
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+          </motion.div>
+        </div>
+      </section>
     </div>
   );
 }
